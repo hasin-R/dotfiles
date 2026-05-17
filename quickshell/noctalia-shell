@@ -1,0 +1,10 @@
+// ==========================================
+// NOCTALIA NATIVE INTERFACE CANVAS
+// ==========================================
+// Handled via Niri environment injections:
+// QS_ICON_THEME "Papirus-Dark"
+// QT_QPA_PLATFORM "wayland"
+// Core Layout components parse background workspaces
+// and handle intelligent automated hide functions dynamically.
+// IPC endpoints connect to launcher bindings toggled on Super+D keys.
+import "./main.qml"
