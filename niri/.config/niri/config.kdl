@@ -81,6 +81,16 @@ layout {
     }
 }
 
+//--- GLOBAL BLUR STRENGTH CONFIGURATION ---
+blur {
+    // Controls the strength/smoothness of the blur. 
+    // 4 passes and 4.0 offset makes it very strong and glassy.
+    passes 4 
+    offset 4.0
+    noise 0.02
+    saturation 1.2
+}
+
 //--- AUTOMATED DAEMON STARTUP COMMANDS ---
 spawn-sh-at-startup "qs -c noctalia-shell"
 
@@ -113,7 +123,7 @@ window-rule {
     clip-to-geometry true
 }
 
-// 2. Apply transparency to active windows, but EXCLUDE video players/browsers
+// 2. Apply transparency to active windows, but EXCLUDE video players/browsers/kitty
 window-rule {
     match is-active=true
     exclude app-id="firefox"
@@ -121,6 +131,7 @@ window-rule {
     exclude app-id="mpv"
     exclude app-id="vlc"
     exclude app-id="io.github.celluloid_player.Celluloid"
+    exclude app-id="kitty"
     opacity 0.95
 }
 
@@ -130,6 +141,7 @@ window-rule {
     exclude app-id="firefox"
     exclude app-id="brave"
     exclude app-id="mpv"
+    exclude app-id="kitty"
     opacity 0.90
 }
 
@@ -143,20 +155,23 @@ window-rule {
     open-floating true
 }
 
-//--- THE FIXED KITTY EXCEPTION
+//--- TERMINAL (KITTY) FOCUS VISUAL RULES WITH BLUR
 window-rule {
     match app-id="kitty"
-    // Fixes the solid background bleed-through bug in Niri
+    match is-focused=true
     draw-border-with-background false
-    // Your beautiful glass layout when typing
-    opacity 0.98
+    opacity 1.0
 }
 
 window-rule {
     match app-id="kitty"
-    match is-active=false
-    // Smoothly dims down when you switch to another window
-    opacity 0.90
+    match is-focused=false
+    draw-border-with-background false
+    opacity 0.75
+    background-effect {
+        blur true
+        xray false // Let it blur windows under it, not just the wallpaper
+    }
 }
 
 binds {
@@ -249,8 +264,8 @@ binds {
     Mod+Shift+U         { move-workspace-down; }
     Mod+Shift+T         { move-workspace-up; }
     
-    Mod+WheelScrollDown      cooldown-ms=150 { focus-workspace-down; }
-    Mod+WheelScrollUp        cooldown-ms=150 { focus-workspace-up; }
+    Mod+WheelScrollDown   cooldown-ms=150 { focus-workspace-down; }
+    Mod+WheelScrollUp     cooldown-ms=150 { focus-workspace-up; }
     Mod+Ctrl+WheelScrollDown  cooldown-ms=150 { move-column-to-workspace-down; }
     Mod+Ctrl+WheelScrollUp    cooldown-ms=150 { move-column-to-workspace-up; }
     
@@ -294,12 +309,12 @@ binds {
     Mod+Ctrl+Shift+R { switch-preset-window-height; }
     Mod+Ctrl+R    { reset-window-height; }
     
-    Mod+F        { maximize-column; }
-    Mod+Shift+F  { fullscreen-window; }
-    Mod+M        { maximize-window-to-edges; }
-    Mod+Ctrl+F   { expand-column-to-available-width; }
-    Mod+C        { center-column; }
-    Mod+Ctrl+C   { center-visible-columns; }
+    Mod+F         { maximize-column; }
+    Mod+Shift+F   { fullscreen-window; }
+    Mod+M         { maximize-window-to-edges; }
+    Mod+Ctrl+F    { expand-column-to-available-width; }
+    Mod+C         { center-column; }
+    Mod+Ctrl+C    { center-visible-columns; }
     
     Mod+Minus { set-column-width "-10%"; }
     Mod+Equal { set-column-width "+10%"; }
