@@ -85,7 +85,7 @@ layout {
 blur {
     // Controls the strength/smoothness of the blur. 
     // 4 passes and 4.0 offset makes it very strong and glassy.
-    passes 4 
+    passes 5 
     offset 4.0
     noise 0.02
     saturation 1.2
