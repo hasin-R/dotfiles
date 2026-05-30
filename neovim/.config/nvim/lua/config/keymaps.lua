@@ -26,3 +26,36 @@ vim.keymap.set("n", "<leader>fv", function()
     },
   })
 end, { desc = "Terminal Vertical Split (cwd)" })
+
+-- Fast compile and run for C++ (Competitive Programming - Space + r)
+vim.keymap.set("n", "<leader>r", function()
+  -- Save the current file
+  vim.cmd("w")
+
+  -- Safely extract file paths to avoid zsh expansion issues
+  local file_path = vim.api.nvim_buf_get_name(0)
+  local binary_path = file_path:gsub("%.cpp$", "") -- Removes the .cpp extension
+
+  -- FIX: Use 'read' to hold the pane open until you hit Enter.
+  -- Added a visual separator so you know exactly when the binary finishes running.
+  local cmd = string.format(
+    "g++ -std=c++20 -O2 -Wall '%s' -o '%s' && '%s'; echo '\n---------------------------\n[Process completed] Press ENTER to close.'; read",
+    file_path,
+    binary_path,
+    binary_path
+  )
+
+  -- Open the terminal on the right side using your preferred Snacks style
+  Snacks.terminal(cmd, {
+    cwd = LazyVim.root.cwd(),
+    win = {
+      style = "split",
+      position = "right",
+      width = 60,
+    },
+  })
+end, { desc = "Compile and Run C++" })
+
+-- Exit insert mode by pressing jk or kj quickly
+vim.keymap.set("i", "jk", "<Esc>", { desc = "Exit Insert Mode" })
+vim.keymap.set("i", "kj", "<Esc>", { desc = "Exit Insert Mode" })

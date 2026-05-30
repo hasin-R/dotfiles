@@ -84,11 +84,11 @@ layout {
 //--- GLOBAL BLUR STRENGTH CONFIGURATION ---
 blur {
     // Controls the strength/smoothness of the blur. 
-    // 4 passes and 4.0 offset makes it very strong and glassy.
-    passes 5 
+    // 3 passes and 2.0 offset strikes the perfect balance for text visibility.
+    passes 7 
     offset 4.0
-    noise 0.02
-    saturation 1.2
+    noise 0.01
+    saturation 1.0
 }
 
 //--- AUTOMATED DAEMON STARTUP COMMANDS ---
@@ -114,7 +114,7 @@ animations {
 // Fixed: Removed background-effect blur to stop the full-screen auto-hide hitbox from blurring windows
 layer-rule {
     match namespace="^noctalia-background-.*$"
-    opacity 0.85
+    opacity 0.95
 }
 
 // 1. Apply standard rounded corners to ALL windows
@@ -132,7 +132,7 @@ window-rule {
     exclude app-id="vlc"
     exclude app-id="io.github.celluloid_player.Celluloid"
     exclude app-id="kitty"
-    opacity 0.95
+    opacity 1.0
 }
 
 // 3. Apply subtle dimming to inactive windows, but keep video channels bright
@@ -142,7 +142,7 @@ window-rule {
     exclude app-id="brave"
     exclude app-id="mpv"
     exclude app-id="kitty"
-    opacity 0.90
+    opacity 0.95
 }
 
 window-rule {
@@ -155,22 +155,32 @@ window-rule {
     open-floating true
 }
 
-//--- TERMINAL (KITTY) FOCUS VISUAL RULES WITH BLUR
+//--- TERMINAL (KITTY) VISUAL STYLING AND CONTRAST FIXED ---
 window-rule {
     match app-id="kitty"
     match is-focused=true
     draw-border-with-background false
-    opacity 1.0
+    
+    // Changing this from 1.0 to 0.90 lets Niri handle the glass blending,
+    // while forcing the window surface to stay dark enough to mask your wallpaper.
+    opacity 0.90
+    
+    background-effect {
+        blur true
+        xray false
+    }
 }
 
 window-rule {
     match app-id="kitty"
     match is-focused=false
     draw-border-with-background false
-    opacity 0.75
+    
+    // Dims inactive terminals down slightly more so you can easily tell where focus is.
+    opacity 0.82
     background-effect {
         blur true
-        xray false // Let it blur windows under it, not just the wallpaper
+        xray false 
     }
 }
 
@@ -202,7 +212,7 @@ binds {
     XF86MonBrightnessDown allow-when-locked=true { spawn "brightnessctl" "--class=backlight" "set" "10%-"; }
     
     Mod+o repeat=false { toggle-overview; }
-    Mod+Q repeat=false { close-window; }
+    Mod+p repeat=false { close-window; }
     
     Mod+Left  { focus-column-left; }
     Mod+Down  { focus-window-down; }
@@ -304,16 +314,16 @@ binds {
     Mod+BracketLeft        { consume-window-into-column; }
     Mod+BracketRight       { expel-window-from-column; }
     
-    Mod+R         { switch-preset-column-width; }
-    Mod+Shift+R   { switch-preset-column-width-back; }
+    Mod+R          { switch-preset-column-width; }
+    Mod+Shift+R    { switch-preset-column-width-back; }
     Mod+Ctrl+Shift+R { switch-preset-window-height; }
     Mod+Ctrl+R    { reset-window-height; }
     
-    Mod+F         { maximize-column; }
-    Mod+Shift+F   { fullscreen-window; }
-    Mod+M         { maximize-window-to-edges; }
+    Mod+F          { maximize-column; }
+    Mod+Shift+F    { fullscreen-window; }
+    Mod+M          { maximize-window-to-edges; }
     Mod+Ctrl+F    { expand-column-to-available-width; }
-    Mod+C         { center-column; }
+    Mod+C          { center-column; }
     Mod+Ctrl+C    { center-visible-columns; }
     
     Mod+Minus { set-column-width "-10%"; }
